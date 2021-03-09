@@ -7,6 +7,17 @@ namespace Lab4
         static void Main(string[] args)
         {
             Console.WriteLine("XD");
+            
+            /*
+             * TODO
+             * 
+             * Serialisation + 
+             * Desirialisation + 
+             *
+             * Scaling + Interpolation 
+             *
+             * Main
+             */
         }
     }
 }
