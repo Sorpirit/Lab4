@@ -22,7 +22,37 @@ namespace Lab4
         private Int32 subchunk2Size;
         private byte[] data;
         
-        
+        public void ScaleTrack(int scale)
+        {
+            //TODO implemnt scaling
+            
+            //Just duplicates track
+            byte[] newData = new byte[data.Length*scale];
+            Array.Copy(data,newData,data.Length);
+            for (int i = 1; i < scale; i++)
+            {
+                Array.Copy(data,0,newData,data.Length * i,data.Length);
+            }
+            
+                
+            data = newData;
+            OnDataChanged();
+        }
+
+        private void OnDataChanged()
+        {
+            /*
+            subchunk2Size == NumSamples * NumChannels * BitsPerSample/8
+                This is the number of bytes in the data.
+                You can also think of this as the size
+                of the read of the subchunk following this
+            */
+            
+            int NumSamples = data.Length * 8 / bitsPerSample;
+            subchunk2Size = NumSamples * numChannels * bitsPerSample / 8;
+            chunkSize = 4 + (8 + subchunk1Size) + (8 + subchunk2Size);
+        }
+
         public void Deserialize(FileStream stream)
         {
             using (BinaryReader reader = new BinaryReader(stream))
