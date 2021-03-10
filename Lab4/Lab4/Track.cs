@@ -31,7 +31,7 @@ namespace Lab4
 
             int sampleSize = BitsPerSample / 8;
 
-            for (int i = 0; i <= newDataLength - sampleSize * 2 * scale - 1; i += sampleSize)
+            for (int i = 0; i <= (int)((data.Length - 1 - 2 * sampleSize) * scale); i += sampleSize)
             {
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
@@ -49,8 +49,7 @@ namespace Lab4
             }
 
             data = newData;
-            int samplesCount = data.Length * 8 / BitsPerSample;
-            SubChunk2Size = samplesCount * NumChannels * BitsPerSample / 8;
+            SubChunk2Size = newDataLength * NumChannels;
             ChunkSize = 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
         }
 
