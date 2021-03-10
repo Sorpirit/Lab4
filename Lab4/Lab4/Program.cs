@@ -27,11 +27,18 @@ namespace Lab4
                 Console.WriteLine(tr);
             }
 
-            tr.ScaleTrack(2);
+            Console.WriteLine(tr.ChunkSize);
+
+            tr.ScaleTrack(.2);
+
             using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
             {
                 tr.Save(stream);
             }
+            
+            Console.WriteLine(tr.ChunkSize);
+
+            Console.ReadKey();
         }
 
         //private static int[] ScaleArr(int scale,int sample,int[] inputArr)

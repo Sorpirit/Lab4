@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Lab4
 {
@@ -12,7 +13,7 @@ namespace Lab4
         public Int32 SubChunk1Id { get; private set; }
         public Int32 SubChunk1Size { get; set; }
         public Int16 AudioFormat { get; private set; }
-        public Int16 ChannelsCount { get; private set; }
+        public Int16 NumChannels { get; private set; }
         public Int32 SampleRate { get; private set; }
         public Int32 ByteRate { get; private set; }
         public Int16 BlockAlign { get; private set; }
@@ -25,25 +26,31 @@ namespace Lab4
 
         public void ScaleTrack(double scale)
         {
-            byte[] newData = new byte[(int)(data.Length * scale)];
+            int newDataLength = (int)(data.Length * scale);
+            byte[] newData = new byte[newDataLength];
 
             int sampleSize = BitsPerSample / 8;
 
-            for (int i = 0; i < data.Length - sampleSize; i += sampleSize)
+            for (int i = 0; i <= newDataLength - sampleSize * scale - 1; i += sampleSize)
             {
-                for (int j = 0; j < scale; j++)
+                byte[] previousSample = new byte[sampleSize];
+                byte[] nextSample = new byte[sampleSize];
+                Array.Copy(data, (int)(i / scale), previousSample, 0, sampleSize);
+                Array.Copy(data, (int)(i / scale + sampleSize), nextSample, 0, sampleSize);
+
+                byte[] currentSample = new byte[sampleSize];
+
+                for (int k = 0; k < sampleSize; k++)
                 {
-                    for (int k = 0; k < sampleSize; k++)
-                    {
-                        newData[(int)(i * scale) + j * sampleSize + k] = data[i + k];
-                    }
+                    currentSample[k] = (byte)(previousSample[k] + (nextSample[k] - previousSample[k]) * (i / (i + sampleSize * scale)));
                 }
+
+                Array.Copy(currentSample, 0, newData, i, sampleSize);
             }
 
             data = newData;
-
             int samplesCount = data.Length * 8 / BitsPerSample;
-            SubChunk2Size = samplesCount * ChannelsCount * BitsPerSample / 8;
+            SubChunk2Size = samplesCount * NumChannels * BitsPerSample / 8;
             ChunkSize = 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
         }
 
@@ -78,7 +85,7 @@ namespace Lab4
                 SubChunk1Id = reader.ReadInt32();
                 SubChunk1Size = reader.ReadInt32();
                 AudioFormat = reader.ReadInt16();
-                ChannelsCount = reader.ReadInt16();
+                NumChannels = reader.ReadInt16();
                 SampleRate = reader.ReadInt32();
                 ByteRate = reader.ReadInt32();
                 BlockAlign = reader.ReadInt16();
@@ -104,7 +111,7 @@ namespace Lab4
                 writer.Write(SubChunk1Id);
                 writer.Write(SubChunk1Size);
                 writer.Write(AudioFormat);
-                writer.Write(ChannelsCount);
+                writer.Write(NumChannels);
                 writer.Write(SampleRate);
                 writer.Write(ByteRate);
                 writer.Write(BlockAlign);
