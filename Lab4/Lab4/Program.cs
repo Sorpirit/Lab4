@@ -7,8 +7,6 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("XD");
-
             /*
              * TODO
              * 
@@ -20,39 +18,38 @@ namespace Lab4
              * Main
              */
 
-            string path = @"C:\Users\danvu\Desktop\BestSounds\file_example_WAV_10MGMono.wav";
-            string outPut = @"C:\Users\danvu\Desktop\BestSounds\testWav1.wav";
+            string path = @"Audio.wav";
+            string outPut = @"Audio2.wav";
             Track tr = new Track();
             using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate))
             {
-                tr.Deserialize(stream);
+                tr.Load(stream);
                 Console.WriteLine(tr);
-
             }
 
-            tr.ScaleTrack(3);
+            tr.ScaleTrack(2);
             using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
             {
-                tr.Serialize(stream);
+                tr.Save(stream);
             }
         }
 
-        private static int[] ScaleArr(int scale,int sample,int[] inputArr)
-        {
-            int[] resultArr = new int[inputArr.Length * scale];
-            for (int i = 0; i < inputArr.Length - sample; i+=sample)
-            {
-                for (int j = 0; j < scale; j++)
-                {
-                    for (int k = 0; k < sample; k++)
-                    {
-                        resultArr[i * scale + j * sample + k] = inputArr[i+k];
-                    }
-                }
-            }
+        //private static int[] ScaleArr(int scale,int sample,int[] inputArr)
+        //{
+        //    int[] resultArr = new int[inputArr.Length * scale];
+        //    for (int i = 0; i < inputArr.Length - sample; i+=sample)
+        //    {
+        //        for (int j = 0; j < scale; j++)
+        //        {
+        //            for (int k = 0; k < sample; k++)
+        //            {
+        //                resultArr[i * scale + j * sample + k] = inputArr[i+k];
+        //            }
+        //        }
+        //    }
 
-            return resultArr;
-        }
+        //    return resultArr;
+        //}
 
         /*    
         public override string ToString()
