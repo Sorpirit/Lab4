@@ -39,16 +39,23 @@ namespace Lab4
             // Trying to duplicating samples/ sill not done
             // suggesting to watch/rewatch that video about wav
             Console.WriteLine(bitsPerSample);
-            for (long i = 0; i < newData.Length - 3; i++)
+           // bitsPerSample = 32;
+            for (long i = 0; i < data.Length - bitsPerSample/8; i++)
             {
-               
+                int k = bitsPerSample / 8;
                 for (int j = 0; j < bitsPerSample/8; j++)
                 {
-                    newData[i*bitsPerSample/8 + j] = data[i % scale + j];
+                    long p = i * bitsPerSample / 8 + j;
+                    long h = i % scale + j;
+                    //Console.Write($"{newData.Length} : {p} ; {data.Length} : {h} . ");
+                    newData[i*bitsPerSample/8 + j] = data[i + j];
                 }
+               // Console.WriteLine("L");
+               // newData
+              // bitsPerSample = 16;
             }
-            
-                
+
+
             data = newData;
             OnDataChanged();
         }

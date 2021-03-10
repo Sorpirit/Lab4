@@ -29,7 +29,7 @@ namespace Lab4
                 Console.WriteLine(tr);
                 
             }
-            tr.ScaleTrack(3);
+            tr.ScaleTrack(2);
             using (FileStream stream = new FileStream(outPut,FileMode.OpenOrCreate))
             {
                 tr.Serialize(stream);
