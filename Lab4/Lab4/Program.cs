@@ -58,6 +58,9 @@ namespace Lab4
         //    return resultArr;
         //}
 
+            return resultArr;
+        }
+
         /*    
         public override string ToString()
         {
