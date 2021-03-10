@@ -25,13 +25,27 @@ namespace Lab4
         public void ScaleTrack(int scale)
         {
             //TODO implemnt scaling
-            
-            //Just duplicates track
             byte[] newData = new byte[data.Length*scale];
+            //Just duplicates track
+            /*
             Array.Copy(data,newData,data.Length);
             for (int i = 1; i < scale; i++)
             {
                 Array.Copy(data,0,newData,data.Length * i,data.Length);
+            }*/
+            //Simple scale
+            
+            // Duplicating bytes leads to unexpected behaviour
+            // Trying to duplicating samples/ sill not done
+            // suggesting to watch/rewatch that video about wav
+            Console.WriteLine(bitsPerSample);
+            for (long i = 0; i < newData.Length - 3; i++)
+            {
+               
+                for (int j = 0; j < bitsPerSample/8; j++)
+                {
+                    newData[i*bitsPerSample/8 + j] = data[i % scale + j];
+                }
             }
             
                 
@@ -39,6 +53,14 @@ namespace Lab4
             OnDataChanged();
         }
 
+        public override string ToString()
+        {
+            byte[] arr = BitConverter.GetBytes(id);
+            byte[] arr1 = BitConverter.GetBytes(subchunk1Id);
+            byte[] arr2 = BitConverter.GetBytes(subchunk2Id);
+            return System.Text.Encoding.Default.GetString(arr) + System.Text.Encoding.Default.GetString(arr1) + System.Text.Encoding.Default.GetString(arr2);
+        }
+        
         private void OnDataChanged()
         {
             /*
