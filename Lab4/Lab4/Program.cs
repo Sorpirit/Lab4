@@ -7,8 +7,6 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("XD");
-
             /*
              * TODO
              * 
@@ -25,15 +23,14 @@ namespace Lab4
             Track tr = new Track();
             using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate))
             {
-                tr.Deserialize(stream);
+                tr.Load(stream);
                 Console.WriteLine(tr);
-
             }
 
             tr.ScaleTrack(2);
             using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
             {
-                tr.Serialize(stream);
+                tr.Save(stream);
             }
         }
 

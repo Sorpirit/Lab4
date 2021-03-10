@@ -12,7 +12,7 @@ namespace Lab4
         public Int32 SubChunk1Id { get; private set; }
         public Int32 SubChunk1Size { get; set; }
         public Int16 AudioFormat { get; private set; }
-        public Int16 NumChannels { get; private set; }
+        public Int16 ChannelsCount { get; private set; }
         public Int32 SampleRate { get; private set; }
         public Int32 ByteRate { get; private set; }
         public Int16 BlockAlign { get; private set; }
@@ -23,9 +23,9 @@ namespace Lab4
 
         private byte[] data;
 
-        public void ScaleTrack(int scale)
+        public void ScaleTrack(double scale)
         {
-            byte[] newData = new byte[data.Length * scale];
+            byte[] newData = new byte[(int)(data.Length * scale)];
 
             int sampleSize = BitsPerSample / 8;
 
@@ -35,14 +35,16 @@ namespace Lab4
                 {
                     for (int k = 0; k < sampleSize; k++)
                     {
-                        newData[i * scale + j * sampleSize + k] = data[i + k];
+                        newData[(int)(i * scale) + j * sampleSize + k] = data[i + k];
                     }
                 }
             }
 
             data = newData;
 
-            OnDataChanged();
+            int samplesCount = data.Length * 8 / BitsPerSample;
+            SubChunk2Size = samplesCount * ChannelsCount * BitsPerSample / 8;
+            ChunkSize = 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
         }
 
         public override string ToString()
@@ -53,21 +55,17 @@ namespace Lab4
             return System.Text.Encoding.Default.GetString(arr) + System.Text.Encoding.Default.GetString(arr1) + System.Text.Encoding.Default.GetString(arr2);
         }
 
-        private void OnDataChanged()
-        {
-            /*
-            subchunk2Size == NumSamples * NumChannels * BitsPerSample/8
-                This is the number of bytes in the data.
-                You can also think of this as the size
-                of the read of the subchunk following this
-            */
+        //private void OnDataChanged()
+        //{
+        //    /*
+        //    subchunk2Size == NumSamples * ChannelsCount * BitsPerSample/8
+        //        This is the number of bytes in the data.
+        //        You can also think of this as the size
+        //        of the read of the subchunk following this
+        //    */
+        //}
 
-            int NumSamples = data.Length * 8 / BitsPerSample;
-            SubChunk2Size = NumSamples * NumChannels * BitsPerSample / 8;
-            ChunkSize = 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
-        }
-
-        public void Deserialize(FileStream stream)
+        public void Load(FileStream stream)
         {
             using (BinaryReader reader = new BinaryReader(stream))
             {
@@ -80,7 +78,7 @@ namespace Lab4
                 SubChunk1Id = reader.ReadInt32();
                 SubChunk1Size = reader.ReadInt32();
                 AudioFormat = reader.ReadInt16();
-                NumChannels = reader.ReadInt16();
+                ChannelsCount = reader.ReadInt16();
                 SampleRate = reader.ReadInt32();
                 ByteRate = reader.ReadInt32();
                 BlockAlign = reader.ReadInt16();
@@ -93,7 +91,7 @@ namespace Lab4
             }
         }
 
-        public void Serialize(FileStream stream)
+        public void Save(FileStream stream)
         {
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
@@ -106,7 +104,7 @@ namespace Lab4
                 writer.Write(SubChunk1Id);
                 writer.Write(SubChunk1Size);
                 writer.Write(AudioFormat);
-                writer.Write(NumChannels);
+                writer.Write(ChannelsCount);
                 writer.Write(SampleRate);
                 writer.Write(ByteRate);
                 writer.Write(BlockAlign);
@@ -116,7 +114,6 @@ namespace Lab4
                 writer.Write(SubChunk2Id);
                 writer.Write(SubChunk2Size);
                 writer.Write(data);
-
             }
         }
     }
