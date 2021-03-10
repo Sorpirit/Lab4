@@ -24,38 +24,23 @@ namespace Lab4
         
         public void ScaleTrack(int scale)
         {
-            //TODO implemnt scaling
+
             byte[] newData = new byte[data.Length*scale];
-            //Just duplicates track
-            /*
-            Array.Copy(data,newData,data.Length);
-            for (int i = 1; i < scale; i++)
-            {
-                Array.Copy(data,0,newData,data.Length * i,data.Length);
-            }*/
-            //Simple scale
+ 
+            int sampleSize=bitsPerSample/8;
             
-            // Duplicating bytes leads to unexpected behaviour
-            // Trying to duplicating samples/ sill not done
-            // suggesting to watch/rewatch that video about wav
-            Console.WriteLine(bitsPerSample);
-           // bitsPerSample = 32;
-            for (long i = 0; i < data.Length - bitsPerSample/8; i++)
+            for (int i = 0; i < data.Length - sampleSize; i+=sampleSize)
             {
-                int k = bitsPerSample / 8;
-                for (int j = 0; j < bitsPerSample/8; j++)
+                for (int j = 0; j < scale; j++)
                 {
-                    long p = i * bitsPerSample / 8 + j;
-                    long h = i % scale + j;
-                    //Console.Write($"{newData.Length} : {p} ; {data.Length} : {h} . ");
-                    newData[i*bitsPerSample/8 + j] = data[i + j];
+                    for (int k = 0; k < sampleSize; k++)
+                    {
+                        newData[i * scale + j * sampleSize + k] = data[i+k];
+                    }
                 }
-               // Console.WriteLine("L");
-               // newData
-              // bitsPerSample = 16;
             }
-
-
+            
+            
             data = newData;
             OnDataChanged();
         }
