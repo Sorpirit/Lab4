@@ -31,7 +31,7 @@ namespace Lab4
 
             int sampleSize = BitsPerSample / 8;
 
-            for (int i = 0; i <= newDataLength - sampleSize * scale - 1; i += sampleSize)
+            for (int i = 0; i <= newDataLength - sampleSize * 2 * scale - 1; i += sampleSize)
             {
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
