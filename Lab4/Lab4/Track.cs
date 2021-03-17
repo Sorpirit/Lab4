@@ -27,6 +27,8 @@ namespace Lab4
         public void ScaleTrack(double scale)
         {
             int newDataLength = (int)(data.Length * scale);
+            if (newDataLength % NumChannels != 0)
+                newDataLength += newDataLength % NumChannels;
             byte[] newData = new byte[newDataLength];
 
             int sampleSize = BitsPerSample / 8;
