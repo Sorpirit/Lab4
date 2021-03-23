@@ -37,8 +37,10 @@ namespace Lab4
                 byte[] leftChannel = new byte[channelLength];
                 Array.Copy(data, rightChannel, channelLength);
                 Array.Copy(data, channelLength, leftChannel, 0, channelLength);
+                
                 rightChannel = ScaleTrack(rightChannel, scale);
                 leftChannel = ScaleTrack(leftChannel, scale);
+                
                 data = new byte[rightChannel.Length + leftChannel.Length];
                 Array.Copy(rightChannel, data, rightChannel.Length);
                 Array.Copy(leftChannel, 0, data, rightChannel.Length, leftChannel.Length);
@@ -91,16 +93,7 @@ namespace Lab4
         
         private byte Lerp(byte y0,byte y1,double x0,double x1,double x)
         {
-            byte l = (byte) ((x - x0) / (x1 - x0));
-            return (byte)(y0 + (y1 - y0) * l);
-        }
-        
-        public override string ToString()
-        {
-            byte[] arr = BitConverter.GetBytes(Id);
-            byte[] arr1 = BitConverter.GetBytes(SubChunk1Id);
-            byte[] arr2 = BitConverter.GetBytes(SubChunk2Id);
-            return System.Text.Encoding.Default.GetString(arr) + System.Text.Encoding.Default.GetString(arr1) + System.Text.Encoding.Default.GetString(arr2);
+            return (byte)(y0 + (y1 - y0) * (byte) ((x - x0) / (x1 - x0)));
         }
 
         public void Load(FileStream stream)
