@@ -50,32 +50,51 @@ namespace Lab4
 
         private byte[] ScaleTrack(byte[] input, double scale)
         {
-            int newDataLength = (int)(input.Length * scale);
-
-            byte[] newData = new byte[newDataLength];
-
             int sampleSize = BitsPerSample / 8;
+            
+            int inputSamples = input.Length / sampleSize;
+            int outputSamples = (int)(scale * inputSamples);
+            
+            byte[] newData = new byte[outputSamples * sampleSize];
 
-            for (int i = 0; i <= (int)((input.Length - 1 - 2 * sampleSize) * scale); i += sampleSize)
+            for (int i = 0; i < newData.Length - sampleSize; i+= sampleSize)
             {
+                
+                double placeInInput = Lerp(0, inputSamples - 1, 0, outputSamples - 1, i/sampleSize);
+
+                int prevSampleIndex = (int) placeInInput;
+                int nextSampleIndex = (int) placeInInput + 1;
+
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
-                Array.Copy(input, (int)(i / scale), previousSample, 0, sampleSize);
-                Array.Copy(input, (int)(i / scale + sampleSize), nextSample, 0, sampleSize);
-
+                Array.Copy(input, prevSampleIndex * sampleSize, previousSample, 0, sampleSize);
+                Array.Copy(input, nextSampleIndex * sampleSize, nextSample, 0, sampleSize);
+                
                 byte[] currentSample = new byte[sampleSize];
 
                 for (int k = 0; k < sampleSize; k++)
                 {
-                    currentSample[k] = (byte)(previousSample[k] + (nextSample[k] - previousSample[k]) * (i / (i + sampleSize * scale)));
+                    currentSample[k] = Lerp(previousSample[k],nextSample[k],prevSampleIndex,nextSampleIndex,placeInInput);
                 }
-
+                
                 Array.Copy(currentSample, 0, newData, i, sampleSize);
             }
 
             return newData;
         }
 
+
+        private double Lerp(double y0,double y1,double x0,double x1,double x)
+        {
+            return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+        }
+        
+        private byte Lerp(byte y0,byte y1,double x0,double x1,double x)
+        {
+            byte l = (byte) ((x - x0) / (x1 - x0));
+            return (byte)(y0 + (y1 - y0) * l);
+        }
+        
         public override string ToString()
         {
             byte[] arr = BitConverter.GetBytes(Id);
