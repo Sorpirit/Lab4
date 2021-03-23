@@ -18,7 +18,7 @@ namespace Lab4
              * Main
              */
 
-            string path = @"C:\Users\danvu\Documents\GitHubPP\Lab4\Lab4\Wavs\tone4stereo.wav";
+            string path = @"C:\Users\danvu\Documents\GitHubPP\Lab4\Lab4\Wavs\tone5.wav";
             string outPut = @"Test2.wav";
             Track tr = new Track();
             using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate))
@@ -29,7 +29,7 @@ namespace Lab4
 
             Console.WriteLine(tr.ChunkSize);
 
-            tr.ScaleTrack(1.28);
+            tr.ScaleTrack(2.28);
 
             using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
             {

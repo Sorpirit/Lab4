@@ -64,8 +64,7 @@ namespace Lab4
 
                 int prevSampleIndex = (int) placeInInput;
                 int nextSampleIndex = (int) placeInInput + 1;
-                double lerp = placeInInput - prevSampleIndex;
-                
+
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
                 Array.Copy(input, prevSampleIndex * sampleSize, previousSample, 0, sampleSize);
@@ -75,38 +74,16 @@ namespace Lab4
 
                 for (int k = 0; k < sampleSize; k++)
                 {
-                    /*byte res = Lerp(previousSample[k],nextSample[k],prevSampleIndex,nextSampleIndex,placeInInput);
-                    Console.Write(res);*/
                     currentSample[k] = Lerp(previousSample[k],nextSample[k],prevSampleIndex,nextSampleIndex,placeInInput);
                 }
                 
                 Array.Copy(currentSample, 0, newData, i, sampleSize);
             }
 
-            /*for (int i = 0; i <= (int)((input.Length - 1 - 2 * sampleSize) * scale); i += sampleSize)
-            {
-                byte[] previousSample = new byte[sampleSize];
-                byte[] nextSample = new byte[sampleSize];
-                Array.Copy(input, (int)(i / scale), previousSample, 0, sampleSize);
-                Array.Copy(input, (int)(i / scale + sampleSize), nextSample, 0, sampleSize);
-
-                byte[] currentSample = new byte[sampleSize];
-
-                for (int k = 0; k < sampleSize; k++)
-                {
-                    currentSample[k] = (byte)(previousSample[k] + (nextSample[k] - previousSample[k]) * (i / (i + sampleSize * scale)));
-                }
-
-                Array.Copy(currentSample, 0, newData, i, sampleSize);
-            }*/
-
             return newData;
         }
 
-        private double Lerp(double min,double max,double x)
-        {
-            return min + (max - min) * x;
-        }
+
         private double Lerp(double y0,double y1,double x0,double x1,double x)
         {
             return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
