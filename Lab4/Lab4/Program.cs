@@ -40,32 +40,5 @@ namespace Lab4
 
             Console.ReadKey();
         }
-
-        //private static int[] ScaleArr(int scale,int sample,int[] inputArr)
-        //{
-        //    int[] resultArr = new int[inputArr.Length * scale];
-        //    for (int i = 0; i < inputArr.Length - sample; i+=sample)
-        //    {
-        //        for (int j = 0; j < scale; j++)
-        //        {
-        //            for (int k = 0; k < sample; k++)
-        //            {
-        //                resultArr[i * scale + j * sample + k] = inputArr[i+k];
-        //            }
-        //        }
-        //    }
-
-        //    return resultArr;
-        //}
-
-        /*    
-        public override string ToString()
-        {
-            byte[] arr = BitConverter.GetBytes(id);
-            byte[] arr1 = BitConverter.GetBytes(subchunk1Id);
-            byte[] arr2 = BitConverter.GetBytes(subchunk2Id);
-            return System.Text.Encoding.Default.GetString(arr) + System.Text.Encoding.Default.GetString(arr1) + System.Text.Encoding.Default.GetString(arr2);
-        }
-        */
     }
 }
