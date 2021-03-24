@@ -69,10 +69,10 @@ namespace Lab4
 
             for (int i = 0; i < newData.Length - sampleSize; i += sampleSize)
             {
-                int placeInInput = Interpolate(0, inputSamples - 1, 0, outputSamples - 1, i / sampleSize);
+                double placeInInput = Interpolate(0, inputSamples - 1, 0, outputSamples - 1, i / sampleSize);
 
-                int prevSampleIndex = placeInInput;
-                int nextSampleIndex = placeInInput + 1;
+                int prevSampleIndex = (int) placeInInput;
+                int nextSampleIndex = (int) placeInInput + 1;
 
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
@@ -93,7 +93,7 @@ namespace Lab4
         }
 
 
-        private int Interpolate(double y0, double y1, double x0, double x1, double x)
+        private double Interpolate(double y0, double y1, double x0, double x1, double x)
         {
             return (int)(y0 + (y1 - y0) * (x - x0) / (x1 - x0));
         }
@@ -121,23 +121,6 @@ namespace Lab4
                 SubChunk2Id = reader.ReadInt32();
                 SubChunk2Size = reader.ReadInt32();
                 data = reader.ReadBytes((int)reader.BaseStream.Length);
-
-                Console.WriteLine(Id);
-                Console.WriteLine(ChunkSize);
-                Console.WriteLine(Format);
-                Console.WriteLine();
-                Console.WriteLine(SubChunk1Id);
-                Console.WriteLine(SubChunk1Size);
-                Console.WriteLine(AudioFormat);
-                Console.WriteLine(NumChannels);
-                Console.WriteLine(SampleRate);
-                Console.WriteLine(ByteRate);
-                Console.WriteLine(BlockAlign);
-                Console.WriteLine(BitsPerSample);
-                Console.WriteLine();
-                Console.WriteLine(SubChunk2Id);
-                Console.WriteLine(SubChunk2Size);
-                Console.WriteLine(data.Length);
             }
         }
 
