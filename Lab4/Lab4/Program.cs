@@ -7,38 +7,33 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            /*
-             * TODO
-             * 
-             * Serialisation + 
-             * Desirialisation + 
-             *
-             * Scaling + Interpolation 
-             *
-             * Main
-             */
-
-            string path = @"C:\Users\danvu\Documents\GitHubPP\Lab4\Lab4\Wavs\tone5.wav";
-            string outPut = @"Test2.wav";
-            Track tr = new Track();
-            using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate))
+            Console.WriteLine("Wav scaler.)");
+            Console.WriteLine("Input format: [Input file] [Output file] [Scale]");
+            string input = Console.ReadLine();
+            string[] commands = input.Split(' ');
+            if (commands.Length != 3)
             {
-                tr.Load(stream);
-                Console.WriteLine(tr);
+                Console.WriteLine("Wrong input format");
             }
-
-            Console.WriteLine(tr.ChunkSize);
-
-            tr.ScaleTrack(2.28);
+            string inPath = commands[0];
+            string outPut = commands[1];
+            double scaleFactor = double.Parse(commands[2]);
+            
+            Track track = new Track();
+            using (FileStream stream = new FileStream(inPath, FileMode.OpenOrCreate))
+            {
+                Console.WriteLine("Reading wav file...");
+                track.Load(stream);
+            }
+            
+            track.ScaleTrack(scaleFactor);
 
             using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
             {
-                tr.Save(stream);
+                Console.WriteLine("Writing to wav file...");
+                track.Save(stream);
             }
-            
-            Console.WriteLine(tr.ChunkSize);
 
-            Console.ReadKey();
         }
     }
 }
