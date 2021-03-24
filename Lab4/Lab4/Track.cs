@@ -35,15 +35,23 @@ namespace Lab4
                 int channelLength = data.Length / 2;
                 byte[] rightChannel = new byte[channelLength];
                 byte[] leftChannel = new byte[channelLength];
-                Array.Copy(data, rightChannel, channelLength);
-                Array.Copy(data, channelLength, leftChannel, 0, channelLength);
-                
+
+                for (int i = 0; i < channelLength; i ++)
+                {
+                    leftChannel[i] = data[2*i];
+                    rightChannel[i] = data[2*i + 1];
+                }
+
                 rightChannel = ScaleTrack(rightChannel, scale);
                 leftChannel = ScaleTrack(leftChannel, scale);
-                
+
                 data = new byte[rightChannel.Length + leftChannel.Length];
-                Array.Copy(rightChannel, data, rightChannel.Length);
-                Array.Copy(leftChannel, 0, data, rightChannel.Length, leftChannel.Length);
+
+                for (int i = 0; i < leftChannel.Length; i++)
+                {
+                    data[2 * i] = leftChannel[i];
+                    data[2 * i + 1] = rightChannel[i];
+                }
             }
 
             SubChunk2Size = data.Length;
@@ -53,32 +61,31 @@ namespace Lab4
         private byte[] ScaleTrack(byte[] input, double scale)
         {
             int sampleSize = BitsPerSample / 8;
-            
+
             int inputSamples = input.Length / sampleSize;
             int outputSamples = (int)(scale * inputSamples);
-            
+
             byte[] newData = new byte[outputSamples * sampleSize];
 
-            for (int i = 0; i < newData.Length - sampleSize; i+= sampleSize)
+            for (int i = 0; i < newData.Length - sampleSize; i += sampleSize)
             {
-                
-                double placeInInput = Lerp(0, inputSamples - 1, 0, outputSamples - 1, i/sampleSize);
+                int placeInInput = Interpolate(0, inputSamples - 1, 0, outputSamples - 1, i / sampleSize);
 
-                int prevSampleIndex = (int) placeInInput;
-                int nextSampleIndex = (int) placeInInput + 1;
+                int prevSampleIndex = placeInInput;
+                int nextSampleIndex = placeInInput + 1;
 
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
                 Array.Copy(input, prevSampleIndex * sampleSize, previousSample, 0, sampleSize);
                 Array.Copy(input, nextSampleIndex * sampleSize, nextSample, 0, sampleSize);
-                
+
                 byte[] currentSample = new byte[sampleSize];
 
                 for (int k = 0; k < sampleSize; k++)
                 {
-                    currentSample[k] = Lerp(previousSample[k],nextSample[k],prevSampleIndex,nextSampleIndex,placeInInput);
+                    currentSample[k] = (byte)(Interpolate(previousSample[k], nextSample[k], prevSampleIndex, nextSampleIndex, placeInInput));
                 }
-                
+
                 Array.Copy(currentSample, 0, newData, i, sampleSize);
             }
 
@@ -86,14 +93,9 @@ namespace Lab4
         }
 
 
-        private double Lerp(double y0,double y1,double x0,double x1,double x)
+        private int Interpolate(double y0, double y1, double x0, double x1, double x)
         {
-            return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
-        }
-        
-        private byte Lerp(byte y0,byte y1,double x0,double x1,double x)
-        {
-            return (byte)(y0 + (y1 - y0) * (byte) ((x - x0) / (x1 - x0)));
+            return (int)(y0 + (y1 - y0) * (x - x0) / (x1 - x0));
         }
 
         public void Load(FileStream stream)
@@ -119,6 +121,23 @@ namespace Lab4
                 SubChunk2Id = reader.ReadInt32();
                 SubChunk2Size = reader.ReadInt32();
                 data = reader.ReadBytes((int)reader.BaseStream.Length);
+
+                Console.WriteLine(Id);
+                Console.WriteLine(ChunkSize);
+                Console.WriteLine(Format);
+                Console.WriteLine();
+                Console.WriteLine(SubChunk1Id);
+                Console.WriteLine(SubChunk1Size);
+                Console.WriteLine(AudioFormat);
+                Console.WriteLine(NumChannels);
+                Console.WriteLine(SampleRate);
+                Console.WriteLine(ByteRate);
+                Console.WriteLine(BlockAlign);
+                Console.WriteLine(BitsPerSample);
+                Console.WriteLine();
+                Console.WriteLine(SubChunk2Id);
+                Console.WriteLine(SubChunk2Size);
+                Console.WriteLine(data.Length);
             }
         }
 

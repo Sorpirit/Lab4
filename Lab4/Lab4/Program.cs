@@ -7,33 +7,43 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Wav scaler.)");
-            Console.WriteLine("Input format: [Input file] [Output file] [Scale]");
-            string input = Console.ReadLine();
-            string[] commands = input.Split(' ');
-            if (commands.Length != 3)
+            Console.Write("Enter input file name: ");
+            string inputPath = Console.ReadLine() ?? throw new ArgumentNullException();
+            if (!File.Exists(inputPath) || !inputPath.EndsWith(".wav"))
             {
-                Console.WriteLine("Wrong input format");
+                throw new ArgumentException("There was an error with the input file");
             }
-            string inPath = commands[0];
-            string outPut = commands[1];
-            double scaleFactor = double.Parse(commands[2]);
-            
-            Track track = new Track();
-            using (FileStream stream = new FileStream(inPath, FileMode.OpenOrCreate))
+
+            Console.Write("Enter output file name: ");
+            string outputPath = Console.ReadLine() ?? throw new ArgumentNullException();
+            if (!outputPath.EndsWith(".wav"))
             {
-                Console.WriteLine("Reading wav file...");
+                throw new ArgumentException("There was an error with the output file");
+            }
+
+            Console.Write("Enter scale factor: ");
+            if (!double.TryParse(Console.ReadLine(), out double scaleFactor))
+            {
+                throw new InvalidCastException();
+            }
+
+            Track track = new Track();
+
+            Console.WriteLine("Reading wav file...");
+            using (FileStream stream = new FileStream(inputPath, FileMode.OpenOrCreate))
+            {
                 track.Load(stream);
             }
             
             track.ScaleTrack(scaleFactor);
 
-            using (FileStream stream = new FileStream(outPut, FileMode.OpenOrCreate))
+            Console.WriteLine("Writing to wav file...");
+            using (FileStream stream = new FileStream(outputPath, FileMode.OpenOrCreate))
             {
-                Console.WriteLine("Writing to wav file...");
                 track.Save(stream);
             }
 
+            Console.ReadKey();
         }
     }
 }
