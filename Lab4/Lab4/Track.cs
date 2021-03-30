@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -26,9 +27,11 @@ namespace Lab4
 
         public void ScaleTrack(double scale)
         {
+            double absScale = Math.Abs(scale);
+
             if (NumChannels == 1)
             {
-                data = ScaleTrack(data, scale);
+                data = ScaleTrack(data, absScale);
             }
             else if (NumChannels == 2)
             {
@@ -36,14 +39,14 @@ namespace Lab4
                 byte[] rightChannel = new byte[channelLength];
                 byte[] leftChannel = new byte[channelLength];
 
-                for (int i = 0; i < channelLength; i ++)
+                for (int i = 0; i < channelLength; i++)
                 {
-                    leftChannel[i] = data[2*i];
-                    rightChannel[i] = data[2*i + 1];
+                    leftChannel[i] = data[2 * i];
+                    rightChannel[i] = data[2 * i + 1];
                 }
 
-                rightChannel = ScaleTrack(rightChannel, scale);
-                leftChannel = ScaleTrack(leftChannel, scale);
+                rightChannel = ScaleTrack(rightChannel, absScale);
+                leftChannel = ScaleTrack(leftChannel, absScale);
 
                 data = new byte[rightChannel.Length + leftChannel.Length];
 
@@ -52,6 +55,32 @@ namespace Lab4
                     data[2 * i] = leftChannel[i];
                     data[2 * i + 1] = rightChannel[i];
                 }
+            }
+
+            if (scale < 0)
+            {
+                int bytesPerSample = BitsPerSample / 8;
+                byte[,] samples = new byte[data.Length / bytesPerSample, bytesPerSample];
+
+                for (int i = 0; i < data.Length / bytesPerSample; i++)
+                {
+                    for (int j = 0; j < bytesPerSample; j++)
+                    {
+                        samples[i, j] = data[i * bytesPerSample + j];
+                    }
+                }
+
+                byte[] reversedData = new byte[data.Length];
+
+                for (int i = samples.GetLength(0) - 1; i >= 0; i--)
+                {
+                    for (int j = 0; j < bytesPerSample; j++)
+                    {
+                        reversedData[2 * samples.GetLength(0) - 2 * i - 2 + j] = samples[i, j];
+                    }
+                }
+
+                data = reversedData;
             }
 
             SubChunk2Size = data.Length;
@@ -71,8 +100,8 @@ namespace Lab4
             {
                 double placeInInput = Interpolate(0, inputSamples - 1, 0, outputSamples - 1, i / sampleSize);
 
-                int prevSampleIndex = (int) placeInInput;
-                int nextSampleIndex = (int) placeInInput + 1;
+                int prevSampleIndex = (int)placeInInput;
+                int nextSampleIndex = (int)placeInInput + 1;
 
                 byte[] previousSample = new byte[sampleSize];
                 byte[] nextSample = new byte[sampleSize];
