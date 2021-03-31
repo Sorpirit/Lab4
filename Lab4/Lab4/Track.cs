@@ -121,6 +121,29 @@ namespace Lab4
             return newData;
         }
 
+        public void RepeatTrack(double scale)
+        {
+            byte[] newData = new byte[(int)(data.Length * scale)];
+
+            int integerScale = (int) scale;
+
+            for (int i = 0; i < integerScale; i++)
+            {
+                Array.Copy(data, 0, newData, i * data.Length, data.Length);
+            }
+
+            double realScale = scale % 1;
+
+            for (int i = 0; i < data.Length * realScale; i++)
+            {
+                newData[integerScale * data.Length + i] = data[i];
+            }
+
+            data = newData;
+
+            SubChunk2Size = data.Length;
+            ChunkSize = 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
+        }
 
         private double Interpolate(double y0, double y1, double x0, double x1, double x)
         {

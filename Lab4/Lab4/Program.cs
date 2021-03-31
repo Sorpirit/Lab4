@@ -39,7 +39,7 @@ namespace Lab4
                 track.Load(stream);
             }
             
-            track.ScaleTrack(scaleFactor);
+            track.RepeatTrack(scaleFactor);
 
             Console.WriteLine("Writing to wav file ⌛");
             using (FileStream stream = new FileStream(outputPath, FileMode.OpenOrCreate))
