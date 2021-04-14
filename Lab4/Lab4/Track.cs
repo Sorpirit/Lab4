@@ -134,7 +134,7 @@ namespace Lab4
 
             double realScale = scale % 1;
 
-            for (int i = 0; i < data.Length * realScale; i++)
+            for (int i = 0; i < Math.Round(data.Length * realScale); i++)
             {
                 newData[integerScale * data.Length + i] = data[i];
             }
